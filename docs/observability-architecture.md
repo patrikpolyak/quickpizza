@@ -9,7 +9,7 @@ graph TD
     Browser["Browser (SvelteKit)"]
     Faro["Grafana Faro SDK"]
 
-    subgraph QuickPizza Process
+    subgraph qp["QuickPizza Process"]
         Gateway["Gateway\n(URL-based proxy)"]
         PublicAPI["PublicAPI / Frontend\n(Static assets + SvelteKit SSR)"]
         Recommendations["Recommendations Service\nPOST /api/pizza\nGET /api/pizza/:id"]
@@ -19,6 +19,7 @@ graph TD
         Config["Config Service\n/api/config"]
         HTTPTesting["HTTP Testing Service\n/api/status/:code\n/api/delay/:n\n/api/get  /api/post …"]
         gRPC["gRPC Service\n:3334 / :3335 health"]
+        OBS["Observability Layer\n(otelhttp · bunotel · Pyroscope agent)"]
     end
 
     DB[(SQLite / PostgreSQL)]
@@ -42,9 +43,9 @@ graph TD
     Catalog --> DB
     Copy --> DB
 
-    QuickPizza Process -->|"OTLP traces + metrics"| OTEL
-    QuickPizza Process -->|"profiling"| Pyroscope
-    QuickPizza Process -->|"scrape"| Prometheus
+    OBS -->|"OTLP traces + metrics"| OTEL
+    OBS -->|"profiling"| Pyroscope
+    OBS -->|"scrape"| Prometheus
 ```
 
 **Service enable/disable env vars:**
